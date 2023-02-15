@@ -6,7 +6,7 @@ info:
   version: 1.0.0
 
 servers:
-  - url: http://127.0.0.1:8181
+  - url: https://todo-service-53ws.onrender.com
 tags:
   - name: Todo List
     description: Operations about Todo List
