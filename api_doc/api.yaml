@@ -1,0 +1,433 @@
+openapi: 3.0.3
+info:
+  title: Todo service
+  description: |-
+    This is a sample Todo service
+  version: 1.0.0
+
+servers:
+  - url: http://127.0.0.1:8181
+tags:
+  - name: Todo List
+    description: Operations about Todo List
+paths:
+
+  /v1/user/signup:
+    post:
+      tags:
+        - user
+      summary: Create user
+      description: Register a user. User role should be "Admin" or "User"
+      operationId: createUser
+      requestBody:
+        description: Created user object
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+
+      responses:
+        "200":
+            description: successful operation
+            content:
+              application/json:
+                examples:
+                  user registered successfully:
+                    value:
+                      message: User Registered Successfully
+        "400":
+          description: Bad Request - see `message` field for additional information
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BadRequestResponse"
+
+  /v1/user/login:
+    get:
+      tags:
+        - user
+      summary: Logs user into the system
+      description: ''
+      operationId: loginUser
+      parameters:
+        - name: email
+          in: query
+          description: The email for login
+          required: false
+          schema:
+            type: string
+        - name: password
+          in: query
+          description: The password for login in clear text
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+
+          content:
+            application/json:
+              schema:
+                 $ref: '#/components/schemas/login'
+        '400':
+          description: Invalid username/password supplied
+ 
+  /v1/todo/add:
+    post:
+      tags:
+        - Todo
+      summary: Add Todo. 
+      description: Add Todo. Token valid for 5 Hrs
+      operationId: addTodo
+      parameters:
+        - $ref: '#/components/parameters/AccessToken'
+      requestBody:
+        description: add todo object
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/todo'
+
+      responses:
+        "200":
+            description: successful operation
+            content:
+              application/json:
+                examples:
+                  URL added successfully:
+                    value:
+                      message: Todo added Successfully
+        "400":
+          description: Bad Request - see `message` field for additional information
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BadRequestResponse"
+  
+  /v1/todo/update:
+    put:
+      tags:
+        - Todo
+      summary: Update Todo
+      description: Update Todo. Token valid for 5 Hrs
+      operationId: updateTodo
+      parameters:
+        - $ref: '#/components/parameters/AccessToken'
+        - name: todo_id
+          in: query
+          description: Id of Todo
+          required: true
+          schema:
+            type: string
+        - name: user_id
+          in: query
+          description: Id of user
+          required: false
+          schema:
+            type: string    
+      requestBody:
+        description: update todo object
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/update_todo'
+
+      responses:
+        "200":
+            description: successful operation
+            content:
+              application/json:
+                examples:
+                  URL updated successfully:
+                    value:
+                      message: updated Successfully
+        "400":
+          description: Bad Request - see `message` field for additional information
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BadRequestResponse" 
+  /v1/post/add:
+    post:
+      tags:
+        - Post
+      summary: Add Post
+      description: Add Post. Token valid for 5 Hrs
+      operationId: postAdd
+      parameters:
+        - $ref: '#/components/parameters/AccessToken'
+      requestBody:
+        description: add Post object
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/post'
+
+      responses:
+        "200":
+            description: successful operation
+            content:
+              application/json:
+                examples:
+                  URL added successfully:
+                    value:
+                      message: User Registered Successfully
+        "400":
+          description: Bad Request - see `message` field for additional information
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BadRequestResponse"
+  /v1/post/comments:
+    post:
+      tags:
+        - Post
+      summary: Post comments
+      description: Post comments. Token valid for 5 Hrs
+      operationId: postComments
+      parameters:
+        - $ref: '#/components/parameters/AccessToken'
+        - name: post_id
+          in: query
+          description: Id of post
+          required: true
+          schema:
+            type: string
+        - name: user_id
+          in: query
+          description: Id of user
+          required: false
+          schema:
+            type: string       
+      requestBody:
+        description: post comment
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/postComment'
+
+      responses:
+        "200":
+            description: successful operation
+            content:
+              application/json:
+                examples:
+                  URL added successfully:
+                    value:
+                      message: User Registered Successfully
+        "400":
+          description: Bad Request - see `message` field for additional information
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BadRequestResponse"               
+  /v1/todo/list:
+    get:
+      tags:
+        - Todo
+      summary: list Todo
+      description: list Todo. Token valid for 5 Hrs
+      operationId: listTodo
+      parameters:
+        - $ref: '#/components/parameters/AccessToken'
+        - in: query
+          name: limit
+          description: Set the max size of results. Default value 20 and max value allowed 2000
+          schema:
+            type: integer
+          required: false
+        - in: query
+          name: offset
+          description: Skip this number of items before returning results. 
+          schema:
+            type: integer
+          required: false
+        - in: query
+          name: todo_id
+          description: Id of the Todo 
+          schema:
+            type: string
+          required: false  
+
+
+      responses:
+        "200":
+            description: successful operation
+            content:
+              application/json:
+                examples:
+                  URL list:
+                    value:
+                      message: List
+        "400":
+          description: Bad Request - see `message` field for additional information
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BadRequestResponse"
+  
+  /v1/post/list:
+    get:
+      tags:
+        - Post
+      summary: list Post
+      description: list Post. Token valid for 5 Hrs
+      operationId: listPost
+      parameters:
+        - $ref: '#/components/parameters/AccessToken'
+        - in: query
+          name: limit
+          description: Set the max size of results. Default value 20 and max value allowed 2000
+          schema:
+            type: integer
+          required: false
+        - in: query
+          name: offset
+          description: Skip this number of items before returning results. 
+          schema:
+            type: integer
+          required: false
+        - in: query
+          name: post_id
+          description: Id of the post
+          schema:
+            type: string
+          required: false  
+
+
+      responses:
+        "200":
+            description: successful operation
+            content:
+              application/json:
+                examples:
+                  URL list:
+                    value:
+                      message: List
+        "400":
+          description: Bad Request - see `message` field for additional information
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BadRequestResponse"              
+
+components:
+  parameters:
+   AccessToken:
+      name: "x-access-token"
+      in: header
+      description: Access Token.
+      required: true
+      schema:
+        type: string
+  schemas:
+
+    User:
+      type: object
+      properties:
+
+        name:
+          type: string
+          example: theUser
+        email:
+          type: string
+          example: john@email.com
+        password:
+          type: string
+          example: '12345'
+        city:
+          type: string
+          example: 'city'
+        age:
+          type: integer
+          description: age
+          format: int32
+          example: 1
+        role:
+          type: string
+          enum: ["Admin", "User"]
+          example: Admin
+
+    login:
+      type: object
+      properties:
+        message:
+          type: string
+          example: "login successful"
+        toke:
+          type: string
+          example: "as3sdsdjlkd9s"
+          
+    post:
+      type: object
+      properties:
+        post:
+          type: string
+          example: "Any"
+        post_name:
+          type: string
+          example: "Car" 
+          
+          
+    postComment:
+      type: object
+      properties:
+        comments:
+          type: string
+          example: "Any"
+     
+     
+    todo:
+      type: object
+      properties:
+        todo_name:
+          type: string
+          example: "successful"
+        todo_lists:
+          type: array
+          items:
+            type: string
+            example: "as3sdsdjlkd9s" 
+    update_todo:
+      type: object
+      properties:
+        todo_name:
+          type: string
+          example: "successful"
+        todo_lists:
+          type: array
+          items:
+            type: string
+            example: "as3sdsdjlkd9s"
+        is_completed:
+          type: boolean
+          example: true
+    BadRequestResponse:
+      type: object
+      properties:
+        message:
+          type: string
+      example:
+        message: Invalid request body.
+      
+    ApiResponse:
+      type: object
+      properties:
+        code:
+          type: integer
+          format: int32
+        type:
+          type: string
+        message:
+          type: string
+
+  requestBodies:
+    UserArray:
+      description: List of user object
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/User'

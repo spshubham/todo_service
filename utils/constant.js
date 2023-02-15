@@ -1,0 +1,1 @@
+exports.APP = "todo-service";
