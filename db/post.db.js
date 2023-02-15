@@ -61,7 +61,10 @@ exports.postComments = async(body, user_id, post_id) =>{
         Object.keys(query).forEach((key)=>typeof query[key] === "undefined" && delete query[key])
          
         let res = await Post.findOneAndUpdate({_id:post_id,user_id:user_id},query)
-        return res;
+        if(res)
+            return res;
+        else    
+            return Response.RecordNotFound    
     } catch (error) {
         if(error.code == 11000)
             throw Response.UserAlreayExist;

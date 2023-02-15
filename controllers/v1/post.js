@@ -20,7 +20,7 @@ module.exports.postAdd = function postAdd (req, res, next, body) {
 
 
 module.exports.listPost = function listPost (req, res, next, body) {
-  if((req.query["user_id"] && req.user.role == "Admin") || (req.user.user_id && req.user.role == "User"))
+  if((req.user.role == "Admin")||(req.query["user_id"] && req.user.role == "Admin") || (req.user.user_id && req.user.role == "User"))
   {
     let user_id =  req.query["user_id"] || req.user.user_id
     Post.listPost(user_id,req.query["limit"],req.query["offset"],req.query["post_id"])
@@ -36,7 +36,7 @@ module.exports.listPost = function listPost (req, res, next, body) {
 };
 
 module.exports.postComments = function postComments (req, res, next, body) {
-  if((req.query["user_id"] && req.user.role == "Admin") || (req.user.user_id && req.user.role == "User"))
+  if((req.user.role == "Admin")||(req.query["user_id"] && req.user.role == "Admin") || (req.user.user_id && req.user.role == "User"))
   {
     let user_id =  req.query["user_id"] || req.user.user_id
     Post.postComments(body,user_id,req.query["post_id"])
