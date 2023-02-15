@@ -10,9 +10,9 @@ const jwt = require('jsonwebtoken')
 chai.use(chaiAsPromised);
 
 describe("test_post_service_add",()=>{
-    let validateURLReqStub,addStub;
+    let addStub;
     beforeEach(()=>{
-        validateURLReqStub = sinon.stub(validate,"validateURLReq");
+        
         addStub = sinon.stub(db,"postAdd");
     })
     it("test_post_service_success",async()=>{
@@ -30,39 +30,33 @@ describe("test_post_service_add",()=>{
     })
     it("test_post_service_for_invalid_req_params",async()=>{
         let body = {"url_name": "sp.com","frequency":1}
-        validateURLReqStub.returns({isValid:false});
         postService.postAdd(body).catch(function(err){
             expect(err.code).to.be.equals(400)
         })
     })
     it("test_post_service_fail_for_unexpected_error",async()=>{
         addStub.throws("error")
-        validateURLReqStub.returns({isValid:true});
         let body = {"url_name": "sp.com","frequency":1}
         postService.postAdd(body).catch(function(err){
             expect(err.code).to.be.equals(500)
         })
     })
     afterEach(()=>{
-        validateURLReqStub.restore();
         addStub.restore();
     })
 })
 describe("test_post_service_update",()=>{
-    let validateURLReqStub,addStub;
+    let addStub;
     beforeEach(()=>{
-        validateURLReqStub = sinon.stub(validate,"validateURLReq");
         addStub = sinon.stub(db,"postComments");
     })
     it("test_post_service_success",async()=>{
-        validateURLReqStub.returns({isValid:true});
         addStub.returns({code: 200,msg:"url added"})
         let body = {"url_name": "sp.com","frequency":1}
         let res = await postService.postComments(body, "63c4e189ca3c78a13c4671d9", "63c4e189ca3c78a13c4671d9")
         expect(res.code).to.be.equals(200)
     })
     it("test_post_service_not_found",async()=>{
-        validateURLReqStub.returns({isValid:true});
         addStub.returns(false)
         let body = {"url_name": "sp.com","frequency":1}
         let res = await postService.postComments(body, "63c4e189ca3c78a13c4671d9", "63c4e189ca3c78a13c4671d9")
@@ -76,21 +70,18 @@ describe("test_post_service_update",()=>{
     })
     it("test_post_service_fail_for_invalid_req_params",async()=>{
         let body = {"url_name": "sp.com","frequency":1}
-        validateURLReqStub.returns({isValid:false});
         postService.postComments(body,"63c4e189ca3c78a13c4671d9", "63c4e189ca3c78a13c4671d9").catch(function(err){
             expect(err.code).to.be.equals(400)
         })
     })
     it("test_post_servicerl_fail_for_unexpected_error",async()=>{
         addStub.throws("error")
-        validateURLReqStub.returns({isValid:true});
         let body = {"url_name": "sp.com","frequency":1}
         postService.postComments(body,"63c4e189ca3c78a13c4671d9", "63c4e189ca3c78a13c4671d9").catch(function(err){console.log(err);
             expect(err.code).to.be.equals(500)
         })
     })
     afterEach(()=>{
-        validateURLReqStub.restore();
         addStub.restore();
     })
 })
